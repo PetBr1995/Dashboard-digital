@@ -1,17 +1,28 @@
 'use client';
 
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Rss, Users, Book, Compass, FileText, Library, FileCode, MoreHorizontal, Search, Bell, X, Inbox } from "lucide-react";
-import { useState, useRef, useEffect } from "react";
-import { Input } from "@/components/ui/input";
+import { useState, useRef, useEffect } from 'react';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+} from '@/components/ui/tooltip';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { 
+  BarChart as BarChartIcon, 
+  Users, 
+  Megaphone, 
+  FileText, 
+  Contact, 
+  Search, 
+  Bell, 
+  X, 
+  Inbox, 
+  MoreHorizontal 
+} from 'lucide-react';
 
 export function DesktopHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -27,10 +38,8 @@ export function DesktopHeader() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  // Fechar menus ao clicar fora
   useEffect(() => {
     function handleClickOutside(event) {
-      // Fechar menu principal
       if (isMenuOpen && 
           menuRef.current && 
           !menuRef.current.contains(event.target) &&
@@ -39,7 +48,6 @@ export function DesktopHeader() {
         setIsMenuOpen(false);
       }
       
-      // Fechar busca
       if (isSearchOpen && 
           searchRef.current && 
           !searchRef.current.contains(event.target) &&
@@ -50,16 +58,15 @@ export function DesktopHeader() {
       }
     }
 
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside);
       if (searchTimeoutRef.current) {
         clearTimeout(searchTimeoutRef.current);
       }
     };
   }, [isMenuOpen, isSearchOpen]);
 
-  // Atualizar busca com debounce manual
   useEffect(() => {
     if (searchTimeoutRef.current) {
       clearTimeout(searchTimeoutRef.current);
@@ -84,7 +91,6 @@ export function DesktopHeader() {
     };
   }, [searchQuery, pathname, router, searchParams]);
 
-  // Atualizar o estado inicial com os parâmetros da URL
   useEffect(() => {
     const query = searchParams.get('q') || '';
     setSearchQuery(query);
@@ -118,7 +124,7 @@ export function DesktopHeader() {
             </div>
             <Input
               type="search"
-              placeholder="Pesquisar..."
+              placeholder="Buscar clientes ou campanhas..."
               className="pl-10 pr-10 w-full text-lg py-6"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -138,65 +144,53 @@ export function DesktopHeader() {
       {/* Menu principal */}
       <div className={`flex items-center space-x-6 ${isSearchOpen ? 'invisible' : ''}`}>
         <nav className="flex space-x-6">
-          <Link href="#" className="flex items-center space-x-2 text-sm font-medium hover:text-gray-900 border-1 py-1 px-3 rounded-2xl shrink-0">
-            <Rss className="h-8 w-8 bg-black rounded-full text-white p-1.5 items-center justify-center" />
-            <span>Feed</span>
+          <Link href="/" className="flex items-center space-x-2 text-sm font-medium hover:text-gray-900 border py-1 px-3 rounded-2xl shrink-0">
+            <BarChartIcon className="h-8 w-8 bg-[#182c4b] rounded-full text-white p-1.5 items-center justify-center" />
+            <span>Dashboard</span>
           </Link>
-          <Link href="#" className="flex items-center space-x-2 text-sm font-medium hover:text-gray-900 border-1 py-1 px-3 rounded-2xl shrink-0 md:inline-flex hidden">
-            <Users className="h-8 w-8 bg-black rounded-full text-white p-1.5 justify-center items-center" />
+          <Link href="/clientes" className="flex items-center space-x-2 text-sm font-medium hover:text-gray-900 border py-1 px-3 rounded-2xl shrink-0 md:inline-flex hidden">
+            <Users className="h-8 w-8 bg-[#182c4b] rounded-full text-white p-1.5 justify-center items-center" />
+            <span>Clientes</span>
+          </Link>
+          <Link href="/campanhas" className="flex items-center space-x-2 text-sm font-medium hover:text-gray-900 border py-1 px-3 rounded-2xl shrink-0 lg:inline-flex hidden">
+            <Megaphone className="h-8 w-8 bg-[#182c4b] text-white rounded-full p-1.5 justify-center items-center" />
+            <span>Campanhas</span>
+          </Link>
+          <Link href="/relatorios" className="flex items-center space-x-2 text-sm font-medium hover:text-gray-900 border py-1 px-3 rounded-2xl shrink-0 xl:inline-flex hidden">
+            <FileText className="h-8 w-8 bg-[#182c4b] text-white rounded-full p-1.5 justify-center items-center" />
+            <span>Relatórios</span>
+          </Link>
+          <Link href="/membros" className="flex items-center space-x-2 text-sm font-medium hover:text-gray-900 border py-1 px-3 rounded-2xl shrink-0 2xl:inline-flex hidden">
+            <Contact className="h-8 w-8 bg-[#182c4b] text-white rounded-full p-1.5 justify-center items-center" />
             <span>Membros</span>
           </Link>
-          <Link href="#" className="flex items-center space-x-2 text-sm font-medium hover:text-gray-900 border-1 py-1 px-3 rounded-2xl shrink-0 lg:inline-flex hidden">
-            <Book className="h-8 w-8 bg-black rounded-full text-white p-1.5 justify-center items-center" />
-            <span>Cursos</span>
-          </Link>
-          <Link href="#" className="flex items-center space-x-2 text-sm font-medium hover:text-gray-900 border-1 py-1 px-3 rounded-2xl shrink-0 xl:inline-flex hidden">
-            <Compass className="h-8 w-8 bg-black text-white rounded-full p-1.5 justify-center items-center" />
-            <span>Guias</span>
-          </Link>
-          <Link href="#" className="flex items-center space-x-2 text-sm font-medium hover:text-gray-900 border-1 py-1 px-3 rounded-2xl shrink-0 2xl:inline-flex hidden">
-            <FileText className="h-8 w-8 bg-black text-white rounded-full p-1.5 justify-center items-center" />
-            <span>Processos</span>
-          </Link>
-          <Link href="#" className="flex items-center space-x-2 text-sm font-medium hover:text-gray-900 border-1 py-1 px-3 rounded-2xl shrink-0 2xl:inline-flex hidden">
-            <Library className="h-8 w-8 bg-black text-white rounded-full p-1.5 justify-center items-center" />
-            <span>Biblioteca</span>
-          </Link>
-          <Link href="#" className="flex items-center space-x-2 text-sm font-medium hover:text-gray-900 border-1 py-1 px-3 rounded-2xl shrink-0 2xl:inline-flex hidden">
-            <FileCode className="h-8 w-8 bg-black text-white rounded-full p-1.5 justify-center items-center" />
-            <span>Código de Cultura</span>
-          </Link>
           <div className="relative" ref={menuRef}>
-            <Link
-              href="#"
+            <Button
+              variant="ghost"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="flex items-center space-x-2 text-sm font-medium hover:text-gray-900 py-1 px-3 rounded-2xl shrink-0 2xl:hidden"
               ref={menuButtonRef}
             >
-              <MoreHorizontal className="h-8 w-8 bg-white text-black p-1.5 justify-center items-center" />
-            </Link>
+              <MoreHorizontal className="h-6 w-6 text-gray-600" />
+            </Button>
             {isMenuOpen && (
               <div className="absolute top-full right-0 mt-2 bg-white border border-gray-200 rounded-2xl shadow-md min-w-[250px] z-50">
                 <div className="pb-2">
-                  <Link href="#" className="flex gap-2 items-center px-4 py-2 text-sm hover:bg-gray-100 2xl:hidden" onClick={() => setIsMenuOpen(false)}>
-                    <FileCode className="w-4 h-4" />
-                    Código de Cultura
-                  </Link>
-                  <Link href="#" className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-gray-100 2xl:hidden" onClick={() => setIsMenuOpen(false)}>
-                    <Library className="w-4 h-4" />
-                    Biblioteca
-                  </Link>
-                  <Link href="#" className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-gray-100 xl:hidden" onClick={() => setIsMenuOpen(false)}>
-                    <FileText className="w-4 h-4" />
-                    Processos
-                  </Link>
-                  <Link href="#" className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-gray-100 lg:hidden" onClick={() => setIsMenuOpen(false)}>
-                    <Compass className="w-4 h-4" />
-                    Guias
-                  </Link>
-                  <Link href="#" className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-gray-100 md:hidden" onClick={() => setIsMenuOpen(false)}>
-                    <Users className="w-4 h-4" />
+                  <Link href="/membros" className="flex gap-2 items-center px-4 py-2 text-sm hover:bg-gray-100 2xl:hidden" onClick={() => setIsMenuOpen(false)}>
+                    <Contact className="w-4 h-4" />
                     Membros
+                  </Link>
+                  <Link href="/relatorios" className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-gray-100 xl:hidden" onClick={() => setIsMenuOpen(false)}>
+                    <FileText className="w-4 h-4" />
+                    Relatórios
+                  </Link>
+                  <Link href="/campanhas" className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-gray-100 lg:hidden" onClick={() => setIsMenuOpen(false)}>
+                    <Megaphone className="w-4 h-4" />
+                    Campanhas
+                  </Link>
+                  <Link href="/clientes" className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-gray-100 md:hidden" onClick={() => setIsMenuOpen(false)}>
+                    <Users className="w-4 h-4" />
+                    Clientes
                   </Link>
                 </div>
               </div>
@@ -216,7 +210,7 @@ export function DesktopHeader() {
           <Search className="h-6 w-6" />
         </Button>
 
-        {/* Notificações com Dialog e Tooltip */}
+        {/* Notificações */}
         <Dialog>
           <Tooltip>
             <TooltipTrigger asChild>
@@ -238,13 +232,13 @@ export function DesktopHeader() {
             </DialogHeader>
             <div className="py-4">
               <p className="text-sm text-muted-foreground">
-                Você não tem novas notificações
+                Nenhuma nova notificação sobre campanhas ou clientes.
               </p>
             </div>
           </DialogContent>
         </Dialog>
 
-        {/* Mensagens com Tooltip */}
+        {/* Mensagens */}
         <Dialog>
           <Tooltip>
             <TooltipTrigger asChild>
@@ -257,7 +251,7 @@ export function DesktopHeader() {
               </div>
             </TooltipTrigger>
             <TooltipContent>
-              Notificações
+              Mensagens
             </TooltipContent>
           </Tooltip>
           <DialogContent>
@@ -266,11 +260,13 @@ export function DesktopHeader() {
             </DialogHeader>
             <div className="py-4">
               <p className="text-sm text-muted-foreground">
-                Você não tem novas mensagens
+                Nenhuma nova mensagem de clientes.
               </p>
             </div>
           </DialogContent>
         </Dialog>
+
+        {/* Avatar do usuário */}
         <div className="w-8 h-8 bg-gray-300 rounded-full overflow-hidden">
           <img 
             src="https://cdn1.iconfinder.com/data/icons/user-pictures/100/male3-512.png" 
